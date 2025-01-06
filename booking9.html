@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>District</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #5328b4;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #ff4d4d;
+    }
+
+    #logo {
+      width: 400px;
+      margin: 20px;
+    }
+
+    #grid-container {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 1000px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #252545;
+      overflow-y: auto;
+    }
+
+    .seat {
+      background-color: #5e5cdb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+      width: 60px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .seat.selected {
+      background-color: #ff5722;
+      color: #fff;
+    }
+
+    .seat.selected:hover {
+      background-color: #ffb8a3;
+      color: #fff;
+    }
+
+    .seat:hover {
+      background-color: #bdb2ff;
+    }
+
+    #screen {
+      width: 70%;
+      height: 25px;
+      background-color: #333;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    #confirm-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .price-info {
+    margin-top: 10px;
+    font-size: 25px; 
+    color: #ffffff;
+  
+    font-weight: bold;
+  }
+
+    .button {
+      padding: 20px 40px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #3e8e41;
+    }
+
+    #details-form {
+      display: none;
+      flex-direction: column;
+      margin-top: 20px;
+      width: 100%;
+      align-items: center;
+    }
+
+    #details-form input {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 18px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .movie-info {
+      margin-top: 20px;
+      font-size: 30px;
+      color: #11ff00;
+    }
+  </style>
+</head>
+<body>
+  <img id="logo" src="download-removebg-preview.png" alt="Logo">
+  <div id="grid-container"></div>
+
+  <div id="screen">
+    <p>Theatre Screen</p>
+  </div>
+
+  <div id="confirm-section">
+    <button class="button" id="confirm-button">Confirm Booking</button>
+    <form id="details-form">
+      <input type="text" id="name" placeholder="Enter your name" required>
+      <input type="tel" id="phone" placeholder="Enter your phone number" required>
+      <input type="email" id="email" placeholder="Enter your email" required>
+    </form>
+    <div class="price-info" id="price-info"></div>
+  </div>
+
+  <div class="movie-info">
+    <p>Pushpa 2 (Price: 150)</p>
+  </div>
+
+  <script>
+    var gridContainer = document.getElementById('grid-container');
+    var confirmButton = document.getElementById('confirm-button');
+    var priceInfo = document.getElementById('price-info');
+    var detailsForm = document.getElementById('details-form');
+    var selectedSeats = 0;
+    var ticketPrice = 150;
+    var detailsEntered = false;
+
+    function createGrid(rows, cols) {
+      gridContainer.innerHTML = '';
+      gridContainer.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
+      gridContainer.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+
+      for (var i = 0; i < rows * cols; i++) {
+        var seat = document.createElement('div');
+        seat.classList.add('seat');
+        
+        seat.addEventListener('click', function(event) {
+          event.stopPropagation();
+          var seat = event.target;
+          seat.classList.toggle('selected');
+          selectedSeats = document.querySelectorAll('.seat.selected').length;
+          updatePrice();
+        });
+        
+        gridContainer.appendChild(seat);
+      }
+    }
+
+    function updatePrice() {
+      var totalPrice = selectedSeats * ticketPrice;
+      priceInfo.textContent = 'Total Price: ₹' + totalPrice;
+    }
+
+    confirmButton.addEventListener('click', function() {
+      if (!detailsEntered) {
+        if (selectedSeats > 0) {
+          detailsForm.style.display = 'flex';
+          confirmButton.textContent = 'Confirm Payment';
+          detailsEntered = true;
+        } else {
+          alert('Please select at least one seat');
+        }
+      } else {
+        var name = document.getElementById('name').value.trim();
+        var phone = document.getElementById('phone').value.trim();
+        var email = document.getElementById('email').value.trim();
+
+        if (name && phone && email) {
+          window.location.href = 'https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwi4q8Ln792KAxXvXQ8CHWAVDrsYABACGgJ0Yg&ae=2&aspm=1&co=1&ase=2&gclid=CjwKCAiA1eO7BhATEiwAm0Ee-G3Xqi89499PaKhWOb7ScPtUenS6JXCIQPejcnqHtJgH4DMqYuTytBoCYMgQAvD_BwE&ohost=www.google.com&cid=CAESV-D2NMRzNr3gdmCgwRzEpQXIwQgPYjWb6IdAHc4eRBh7R6-E-0jAaZ7svHmtT43XFEj-XFQijWKX7m6wYDSu0zbYma07hTUmpMmD-y3hWGdepmHJdS7b_Q&sig=AOD64_2nUPT89OKhbulpj-IyQz0S05rNoA&q&nis=4&adurl&ved=2ahUKEwi6krzn792KAxVzdfUHHf6DJwMQ0Qx6BAgLEAE';
+        } else {
+          alert('Please fill in all details');
+        }
+      }
+    });
+
+    createGrid(8, 10);
+  </script>
+</body>
+</html>
